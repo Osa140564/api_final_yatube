@@ -10,11 +10,6 @@ from .serializers import (CommentSerializer, FollowSerializer,
                           GroupSerializer, PostSerializer)
 
 
-class CreateRetrieveViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-                            mixins.ListModelMixin, viewsets.GenericViewSet):
-    pass
-
-
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
@@ -37,7 +32,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]
 
@@ -50,8 +44,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, post=post)
 
 
-class FollowViewSet(CreateRetrieveViewSet):
-
+class FollowViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+                    mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = FollowSerializer
     permission_classes = [permissions.IsAuthenticated, ]
     filter_backends = [filters.SearchFilter]
